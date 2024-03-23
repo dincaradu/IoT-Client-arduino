@@ -9,8 +9,9 @@
 ESP8266WiFiMulti WiFiMulti;
 SocketIOclient socketIO;
 
-const char* ssid = "***";
-const char* password = "***";
+const char *ssid = "***";
+const char *password = "***";
+const char *hostname = "test-device";
 
 const int WorkingLED = D1;
 const int SuccessLED = D2;
@@ -82,6 +83,41 @@ void blinkLED(int LED)
 {
   fadeInLED(LED);
   fadeOutLED(LED);
+}
+
+void sendUpdateToServer(uint64_t now, char* event_name, JsonObject param)
+{
+  DynamicJsonDocument doc(1024);
+  JsonArray array = doc.to<JsonArray>();
+
+  // add evnet name
+  // Hint: socket.on('event_name', ....
+  array.add(event_name);
+
+  array.add(param);
+
+  String output;
+  serializeJson(doc, output);
+
+  // Send event
+  socketIO.sendEVENT(output);
+  Serial.println(output);
+}
+
+void sendKeepAlive() 
+{
+  uint64_t now = millis();
+
+  if (now - messageTimestamp > 2000)
+  {
+    messageTimestamp = now;
+    JsonObject param;
+    param["now"] = (uint32_t)now;
+    param["ip"] = ipAddress;
+    param["hostname"] = hostname;
+
+    sendUpdateToServer(now, "keep_alive", param);
+  }
 }
 
 void socketIOEvent(socketIOmessageType_t type, uint8_t *payload, size_t length)
@@ -158,7 +194,7 @@ void connectToWiFi()
 {
   Serial.println("Connecting to the WiFi");
   WiFi.mode(WIFI_STA);
-  WiFi.setHostname("ESP8266");
+  WiFi.setHostname(hostname);
   WiFiMulti.addAP(ssid, password);
 
   Serial.println("Waiting for connection");
@@ -199,7 +235,7 @@ void loopIfConnectedToWifi()
 {
   if (!connectedToWifi)
     return;
-  
+
   loopIfConnectedToWS();
 }
 
@@ -210,32 +246,7 @@ void loopIfConnectedToWS()
   if (!socketIO.isConnected())
     return;
 
-  uint64_t now = millis();
-
-  if (now - messageTimestamp > 2000)
-  {
-    messageTimestamp = now;
-
-    // creat JSON message for Socket.IO (event)
-    DynamicJsonDocument doc(1024);
-    JsonArray array = doc.to<JsonArray>();
-
-    // add evnet name
-    // Hint: socket.on('event_name', ....
-    array.add("keep_alive");
-
-    // add payload (parameters) for the event
-    JsonObject param1 = array.createNestedObject();
-    param1["now"] = (uint32_t)now;
-    param1["ip"] = ipAddress;
-
-    String output;
-    serializeJson(doc, output);
-
-    // Send event
-    socketIO.sendEVENT(output);
-    Serial.println(output);
-  }
+  sendKeepAlive();
 }
 
 void monitorWiFi()
