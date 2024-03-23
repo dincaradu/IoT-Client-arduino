@@ -26,6 +26,8 @@ bool connectedToWifi = false;
 int slotNumber[5] = {14, 13, 11, 7, 0};
 int digits[10] = {191, 134, 219, 207, 230, 237, 253, 135, 255, 239};
 int digitsNoDot[10] = {63, 6, 91, 79, 102, 109, 125, 7, 127, 111};
+String webSocketsServer = "grasutu-pc.local";
+int webSocketsPort = 3000;
 
 String getLastIPAddressSegment(String ip)
 {
@@ -203,13 +205,8 @@ void connectToWebSocket()
     return;
 
   Serial.println("Connecting to the WebSocket");
-
-  DEBUG_WEBSOCKETS("Connecting to: grasutu-pc.local:3000");
-
-  // server address, port and URL
-  socketIO.begin("grasutu-pc.local", 3000);
-
-  // event handler
+  // DEBUG_WEBSOCKETS("Connecting to: grasutu-pc.local:3000");
+  socketIO.begin(webSocketsServer, webSocketsPort);
   socketIO.onEvent(socketIOEvent);
 }
 
