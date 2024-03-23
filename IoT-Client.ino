@@ -1,9 +1,6 @@
-#include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
-#include <WiFiClientSecure.h>
 #include <ArduinoJson.h>
-#include <WebSocketsClient.h>
 #include <SocketIOclient.h>
 
 ESP8266WiFiMulti WiFiMulti;
@@ -85,7 +82,7 @@ void blinkLED(int LED)
   fadeOutLED(LED);
 }
 
-void sendUpdateToServer(uint64_t now, char* event_name, JsonObject param)
+void sendUpdateToServer(uint64_t now, String event_name, JsonObject param)
 {
   DynamicJsonDocument doc(1024);
   JsonArray array = doc.to<JsonArray>();
