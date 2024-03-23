@@ -1,6 +1,6 @@
 # IoT Client Arduino
 
-Example sketch built for ESP8266 board, with 2LEDs, and a 4 digits & 7 segment display 
+Example sketch built for ESP8266 board, with 2LEDs, and a 4-digit 7-segment display, with connection to server through WebSockets v2 and the ability to receive new sketches Over The Air.
 
 
 ## Functionalities
@@ -13,7 +13,6 @@ Example sketch built for ESP8266 board, with 2LEDs, and a 4 digits & 7 segment d
 - Blinks yellow LED while connecting to the WiFi
 - Fades in a green LED after it is connected to the WiFi
 - Displays the last 3-digit segment of the local IP on the display
-- 
 
 
 ## Board, Sensors, and other attachments
