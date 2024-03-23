@@ -1,4 +1,4 @@
-# IoT Client Arduino
+# IoT Client esp8266wifi, 2 leds, display 4 digits 7 segment, OTA upload, WebSockets v2
 
 Example sketch built for ESP8266 board, with 2LEDs, and a 4-digit 7-segment display, with connection to server through WebSockets v2 and the ability to receive new sketches Over The Air.
 
